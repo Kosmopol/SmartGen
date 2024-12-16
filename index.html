@@ -4,32 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SmartGen</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.10/marked.min.js"></script>
 </head>
 <body>
   <h1>Welcome to SmartGen</h1>
   <p>De nouveaux articles sont ajoutés chaque jour.</p>
 
   <h2>Articles Récents :</h2>
-  <ul id="articles-list"></ul>
+  <div id="articles"></div>
 
   <script>
     const folder = "content/posts/";
-    const articlesList = document.getElementById("articles-list");
+    const articlesContainer = document.getElementById("articles");
 
-    // Liste des articles (tu dois savoir quels fichiers existent ou les générer dynamiquement via un script)
-    const articles = [
-      { title: "Les dernières tendances en IA", file: "2024-12-16-les-dernieres-tendances-en-ia.md" }
-    ];
+    // Charger et afficher les articles depuis articles.json
+    async function loadArticles() {
+      const response = await fetch("articles.json");
+      if (response.ok) {
+        const articles = await response.json();
 
-    // Ajouter dynamiquement les articles dans la liste
-    articles.forEach(article => {
-      const listItem = document.createElement("li");
-      const link = document.createElement("a");
-      link.href = folder + article.file;
-      link.textContent = article.title;
-      listItem.appendChild(link);
-      articlesList.appendChild(listItem);
-    });
+        for (const article of articles) {
+          const fileResponse = await fetch(folder + article.file);
+          if (fileResponse.ok) {
+            const content = await fileResponse.text();
+            const articleDiv = document.createElement("div");
+            articleDiv.innerHTML = `
+              <h3>${article.file.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(".md", "").replace(/-/g, " ")}</h3>
+              <div>${marked.parse(content)}</div>
+              <hr>
+            `;
+            articlesContainer.appendChild(articleDiv);
+          } else {
+            console.error("Erreur de chargement :", article.file);
+          }
+        }
+      } else {
+        console.error("Impossible de charger articles.json");
+      }
+    }
+
+    loadArticles();
   </script>
 </body>
 </html>
