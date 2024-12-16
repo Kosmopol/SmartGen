@@ -38,31 +38,35 @@ jobs:
       - name: Convert Markdown to HTML
         run: python scripts/convert_md_to_html.py
 
-      # Étape 7 : Copier les fichiers HTML et articles.json vers la racine
-      - name: Move HTML files to root
+      # Étape 7 : Préparer le contenu pour gh-pages
+      - name: Prepare deployment content
         run: |
-          rsync -av --exclude="articles.json" content/html_posts/ ./  
-          rsync -av articles.json ./        
+          mkdir -p deploy
+          rsync -av --exclude="articles.json" content/html_posts/ deploy/
+          cp -u articles.json deploy/
+          cp -u index.html deploy/
 
-      # Étape 8 : Configurer Git pour pousser les changements
+      # Étape 8 : Configurer Git pour pousser les changements dans le dépôt principal
       - name: Configure Git
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
 
-      # Étape 9 : Commit des changements
+      # Étape 9 : Commit des nouveaux articles
       - name: Commit changes
         run: |
           git add content/posts/*.md content/html_posts/*.html articles.json
           git commit -m "Add new article and HTML conversion [skip ci]" || echo "Rien à commit"
           git push
 
-      # Étape 10 : Déployer sur GitHub Pages
+      # Étape 10 : Déployer sur GitHub Pages (branche gh-pages)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./deploy
+          publish_branch: gh-pages
+          keep_files: false  # Nettoyage avant déploiement
 
       # Étape 11 : Publier sur Mastodon
       - name: Post to Mastodon
