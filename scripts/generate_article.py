@@ -4,6 +4,9 @@ import datetime
 from ai_agent import AIAgent
 from get_trending_topics import get_trending_topic
 import random
+import os
+openai_api_key = os.environ.get("OPENAI_API_KEY")
+agent = AIAgent(api_key=openai_api_key)
 
 with open("config.yaml", "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
