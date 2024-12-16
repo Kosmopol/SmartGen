@@ -41,8 +41,8 @@ jobs:
       # Étape 7 : Copier les fichiers HTML et articles.json vers la racine
       - name: Move HTML files to root
         run: |
-          cp -r content/html_posts/* ./  # Copie les fichiers HTML à la racine
-          cp -u articles.json ./         # Copie articles.json si nécessaire
+          rsync -av --exclude="articles.json" content/html_posts/ ./  
+          rsync -av articles.json ./        
 
       # Étape 8 : Configurer Git pour pousser les changements
       - name: Configure Git
