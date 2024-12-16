@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartGen</title>
+</head>
+<body>
+  <h1>Welcome to SmartGen</h1>
+  <p>New articles are added every day.</p>
+
+  <h2>Recent Articles:</h2>
+  <div id="articles"></div>
+
+  <script>
+    const folder = "./"; // Chemin à la racine
+    const articlesContainer = document.getElementById("articles");
+
+    // Charger et afficher les articles depuis articles.json
+    async function loadArticles() {
+      const response = await fetch("articles.json");
+      if (response.ok) {
+        const articles = await response.json();
+
+        for (const article of articles) {
+          const articleLink = `${folder}${article.file}`;
+          const articleName = article.file
+            .replace(".html", "")
+            .replace(/-/g, " ")
+            .replace(/^\d{4}-\d{2}-\d{2}-/, "");
+
+          const articleDiv = document.createElement("div");
+          articleDiv.innerHTML = `
+            <h3><a href="${articleLink}" target="_blank">${articleName}</a></h3>
+            <hr>
+          `;
+          articlesContainer.appendChild(articleDiv);
+        }
+      } else {
+        console.error("Impossible de charger articles.json");
+      }
+    }
+
+    loadArticles();
+  </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+title: SmartGen
+description: "AI-generated articles on technology and innovation"
+baseurl: "" # Vide si le site est à la racine du dépôt
+url: "https://kosmopol.github.io/SmartGen/"
+markdown: kramdown
