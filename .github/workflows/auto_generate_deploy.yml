@@ -1,8 +1,7 @@
 name: Auto Generate and Deploy
-
 on:
   schedule:
-    - cron: "0 0 * * *" # tous les jours à minuit UTC
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
@@ -11,7 +10,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -21,6 +20,8 @@ jobs:
         run: pip install requests pyyaml jinja2
 
       - name: Generate Article
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/generate_article.py
 
       - name: Commit changes
@@ -31,18 +32,13 @@ jobs:
           git commit -m "Add new article [skip ci]" || echo "Rien à commit"
           git push
 
-      # Build le site statique s'il y a un générateur (ici imaginons pas)
-      # - name: Build site
-      #   run: <commande>
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./  # si le site statique est à la racine
-          # Sinon, build un dossier public
+          publish_dir: ./
 
       - name: Post to Socials
-        run: python scripts/post_to_socials.py
         env:
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+        run: python scripts/post_to_socials.py
