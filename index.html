@@ -13,21 +13,21 @@
   <div id="articles"></div>
 
   <script>
-    const folder = "content/html_posts/"; // Met à jour le dossier vers html_posts
+    const folder = "./"; // Chemin à la racine
     const articlesContainer = document.getElementById("articles");
 
     // Charger et afficher les articles depuis articles.json
     async function loadArticles() {
-      const response = await fetch("articles.json"); // articles.json doit exister à la racine
+      const response = await fetch("articles.json");
       if (response.ok) {
         const articles = await response.json();
 
         for (const article of articles) {
-          const articleLink = `${folder}${article.file}`; // Chemin vers le fichier HTML
+          const articleLink = `${folder}${article.file}`;
           const articleName = article.file
             .replace(".html", "")
             .replace(/-/g, " ")
-            .replace(/^\d{4}-\d{2}-\d{2}-/, ""); // Nettoie le nom du fichier
+            .replace(/^\d{4}-\d{2}-\d{2}-/, "");
 
           const articleDiv = document.createElement("div");
           articleDiv.innerHTML = `
@@ -45,4 +45,3 @@
   </script>
 </body>
 </html>
-
