@@ -1,7 +1,7 @@
 openai_api_key: "OPENAI_API_KEY"
 affiliation_links:
-  - "https://www.amazon.fr/amazonprime?_encoding=UTF8&primeCampaignId=prime_assoc_ft?tag=zenzen0d-21France"
-  - "https://www.amazon.fr/kindle-dbs/hz/signup?tag=https://www.amazon.fr/amazonprime?_encoding=UTF8&primeCampaignId=prime_assoc_ft?tag=zenzen0d-21France"
+  - "https://www.amazon.fr/amazonprime?_encoding=UTF8&primeCampaignId=prime_assoc_ft&tag=zenzen0d-21France"
+  - "https://www.amazon.fr/kindle-dbs/hz/signup?tag=zenzen0d-21France"
   - "https://www.amazon.fr/tbyb/huc?tag=zenzen0d-21France"
   - "https://go.fiverr.com/visit/?bta=1071918&brand=fiverrmarketplace"
   - "https://go.fiverr.com/visit/?bta=1071918&brand=fp"
