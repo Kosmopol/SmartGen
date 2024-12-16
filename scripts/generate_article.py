@@ -30,7 +30,7 @@ prompt = Template(prompt_template).render(
     article_length=article_length,
     topic=topic,
     affiliation_links=aff_links
-)
+) + "\n\nThe article must be written in English."
 
 # Générer le contenu de l'article
 article_content = agent.generate_text(prompt)
