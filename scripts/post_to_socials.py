@@ -2,8 +2,8 @@ import os
 import requests
 import yaml
 import glob
-import datetime
 
+# Charger la configuration
 with open("config.yaml", "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
 
@@ -19,33 +19,37 @@ latest_post = posts[0]
 title = ""
 with open(latest_post, "r", encoding="utf-8") as f:
     lines = f.readlines()
-    # front matter
-    # titre est après title:
     for line in lines:
         if line.startswith("title:"):
             title = line.replace("title:", "").strip().strip('"')
             break
 
-# URL du post (en supposant qu'il suffit du nom de fichier)
+# Générer l'URL du post
 post_url = site_url + latest_post.replace("content/posts/", "").replace(".md", ".html")
 
-tweet_text = f"{title}\n{post_url}\n{tags}"
+# Contenu du message
+status_message = f"{title}\n{post_url}\n{tags}"
 
-twitter_bearer_token = os.environ.get("TWITTER_BEARER_TOKEN")
+# Configuration Mastodon
+mastodon_instance = "https://mastodon.social"  # Remplace par l'instance Mastodon de ton choix
+access_token = os.environ.get("MASTODON_ACCESS_TOKEN")
 
-# Poster sur Twitter (X)
-# Depuis nov. 2023 : Il faut un niveau d'accès approprié à l'API Twitter. Exemple:
-# Ici, on simule avec l'endpoint v2 pour créer un tweet (nécessite Elevated access)
+if not access_token:
+    raise ValueError("❌ MASTODON_ACCESS_TOKEN manquant dans les variables d'environnement.")
 
-url = "https://api.twitter.com/2/tweets"
-headers = {
-    "Authorization": f"Bearer {twitter_bearer_token}",
-    "Content-Type": "application/json"
-}
-data = {
-    "text": tweet_text
-}
+# URL de l'API Mastodon pour publier un statut
+url = f"{mastodon_instance}/api/v1/statuses"
 
-response = requests.post(url, headers=headers, json=data)
-response.raise_for_status()
-print("Tweet publié:", response.json())
+# En-têtes et données pour la requête
+headers = {"Authorization": f"Bearer {access_token}"}
+payload = {"status": status_message}
+
+# Envoyer le statut à Mastodon
+response = requests.post(url, headers=headers, data=payload)
+
+# Vérifier la réponse
+if response.status_code in [200, 202]:
+    print("✅ Statut publié avec succès sur Mastodon !")
+else:
+    print(f"❌ Erreur {response.status_code}: {response.text}")
+    response.raise_for_status()
