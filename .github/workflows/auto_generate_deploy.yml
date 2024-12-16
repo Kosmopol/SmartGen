@@ -22,7 +22,7 @@ jobs:
 
       # Étape 3 : Installer les dépendances Python
       - name: Install dependencies
-        run: pip install requests pyyaml jinja2
+        run: pip install requests pyyaml jinja2 markdown
 
       # Étape 4 : Générer un nouvel article
       - name: Generate new article
@@ -30,31 +30,36 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/generate_article.py
 
-      # Étape 5 : Mettre à jour la liste des articles (articles.json)
+      # Étape 5 : Mettre à jour la liste des articles
       - name: Generate articles list
         run: python scripts/generate_article_list.py
 
-      # Étape 6 : Configurer Git pour pousser les changements
+      # Étape 6 : Convertir Markdown en HTML
+      - name: Convert Markdown to HTML
+        run: python scripts/convert_md_to_html.py
+
+      # Étape 7 : Configurer Git pour pousser les changements
       - name: Configure Git
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
 
-      # Étape 7 : Commit des nouveaux articles et fichiers
+      # Étape 8 : Commit des nouveaux fichiers HTML
       - name: Commit changes
         run: |
-          git add content/posts/*.md articles.json
-          git commit -m "Add new article and update article list [skip ci]" || echo "Rien à commit"
+          git add content/posts/*.md content/html_posts/*.html
+          git commit -m "Add new article and HTML conversion [skip ci]" || echo "Rien à commit"
           git push
 
-      # Étape 8 : Déployer sur GitHub Pages
+      # Étape 9 : Déployer sur GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: content/html_posts
 
-      # Étape 9 : Publier sur Mastodon
+
+      # Étape 10 : Publier sur Mastodon
       - name: Post to Mastodon
         env:
           MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}

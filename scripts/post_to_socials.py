@@ -27,6 +27,7 @@ with open(latest_post, "r", encoding="utf-8") as f:
 # Générer l'URL du post
 post_url = site_url + latest_post.replace("content/posts/", "").replace(".md", ".html")
 
+
 # Contenu du message
 status_message = f"{title}\n{post_url}\n{tags}"
 
