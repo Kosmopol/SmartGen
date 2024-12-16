@@ -1,43 +1,61 @@
 name: Auto Generate and Deploy
+
 on:
   schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
+    - cron: "0 0 * * *" # Exécution quotidienne à minuit UTC
+  workflow_dispatch: # Déclenchement manuel
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      # Étape 1 : Cloner le dépôt
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Étape 2 : Configurer Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install deps
+      # Étape 3 : Installer les dépendances
+      - name: Install dependencies
         run: pip install requests pyyaml jinja2
 
-      - name: Generate Article
+      # Étape 4 : Générer un nouvel article
+      - name: Generate new article
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/generate_article.py
 
-      - name: Configure Git Authentication
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      # Étape 5 : Mettre à jour la liste des articles (articles.json)
+      - name: Generate articles list
+        run: python scripts/generate_article_list.py
 
-      - name: Commit changes
+      # Étape 6 : Configurer l'authentification Git
+      - name: Configure Git
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add content/posts/*.md
-          git commit -m "Add new article [skip ci]" || echo "Rien à commit"
+
+      # Étape 7 : Commit des changements
+      - name: Commit changes
+        run: |
+          git add content/posts/*.md articles.json
+          git commit -m "Add new article and update article list [skip ci]" || echo "Rien à commit"
           git push
 
+      # Étape 8 : Déployer sur GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
+
+      # Étape 9 : Poster sur les réseaux sociaux (Twitter/X)
+      - name: Post to Socials
+        env:
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+        run: python scripts/post_to_socials.py
