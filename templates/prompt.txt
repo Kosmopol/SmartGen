@@ -1,0 +1,10 @@
+Tu es un rédacteur SEO expert. Rédige un article d’environ {{article_length}} mots en français sur le sujet suivant : "{{topic}}".
+
+L’article doit inclure :
+- Un titre principal accrocheur (h1).
+- Des sous-titres structurés (h2, h3).
+- Au moins deux liens d’affiliation pertinents parmi les suivants : {{affiliation_links}}
+- Un ton professionnel, clair, informatif.
+- Une conclusion qui encourage le lecteur à explorer plus de ressources.
+
+Optimise le texte pour le SEO, utilise quelques mots-clés liés aux nouvelles technologies, à l'IA et à l'innovation. Le texte doit être en anglais.
