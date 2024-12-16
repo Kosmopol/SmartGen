@@ -36,6 +36,7 @@ prompt = Template(prompt_template).render(
 article_content = agent.generate_text(prompt)
 
 # Créer un nom de fichier basé sur la date et le sujet
+os.makedirs("content/posts", exist_ok=True)
 date_str = datetime.datetime.utcnow().strftime("%Y-%m-%d")
 slug = topic.lower().replace(" ", "-").replace(":", "").replace("?", "").replace("!", "")[:50]
 post_filename = f"content/posts/{date_str}-{slug}.md"
