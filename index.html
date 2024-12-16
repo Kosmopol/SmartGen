@@ -1,12 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SmartGen</title>
 </head>
 <body>
   <h1>Welcome to SmartGen</h1>
   <p>De nouveaux articles sont ajoutés chaque jour.</p>
+
+  <h2>Articles Récents :</h2>
+  <ul id="articles-list"></ul>
+
+  <script>
+    const folder = "content/posts/";
+    const articlesList = document.getElementById("articles-list");
+
+    // Liste des articles (tu dois savoir quels fichiers existent ou les générer dynamiquement via un script)
+    const articles = [
+      { title: "Les dernières tendances en IA", file: "2024-12-16-les-dernieres-tendances-en-ia.md" }
+    ];
+
+    // Ajouter dynamiquement les articles dans la liste
+    articles.forEach(article => {
+      const listItem = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = folder + article.file;
+      link.textContent = article.title;
+      listItem.appendChild(link);
+      articlesList.appendChild(listItem);
+    });
+  </script>
 </body>
 </html>
