@@ -42,7 +42,7 @@ jobs:
       - name: Move HTML files to root
         run: |
           cp -r content/html_posts/* ./  # Copie les fichiers HTML à la racine
-          cp articles.json ./            # Copie articles.json à la racine
+          cp -u articles.json ./         # Copie articles.json si nécessaire
 
       # Étape 8 : Configurer Git pour pousser les changements
       - name: Configure Git
